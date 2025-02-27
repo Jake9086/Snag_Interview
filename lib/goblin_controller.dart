@@ -4,7 +4,7 @@
 
 class GoblinController {
   String turn(
-      Map<String, dynamic> currentCell, Map<String, dynamic> surroundings) {
+    Map<String, dynamic> currentCell, Map<String, dynamic> surroundings) {
     return 'right';
   }
 }

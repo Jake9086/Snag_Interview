@@ -706,6 +706,92 @@ class GoblinChieftain {
     return distance <= 1;
   }
 
+  Map<String, dynamic> simulatedControls(){
+       if (inventory.length == 3) {
+    // Return to the village to drop off resources
+    return returnToVillage();
+       }
+     // Step 1: Explore the map and find resources and traps
+  List<Map<String, int>> resources = findResources();
+  List<Map<String, int>> traps = findTraps();
+  
+  // Step 2: Find the nearest resource or village
+  Map<String, int> target = findNearestResource(resources);
+  
+  if (target != null) {
+    // Move toward the nearest resource
+    return moveTo(target['x']!, target['y']!);
+  } else {
+    // If no resource left, return to the village
+    return returnToVillage();
+  }
+ }
+
+List<Map<String, int>> findResources() {
+  List<Map<String, int>> resources = [];
+  
+  for (int y = 0; y < gridSize; y++) {
+    for (int x = 0; x < gridSize; x++) {
+      if (grid[y][x] == 'G' || grid[y][x] == 'D' || grid[y][x] == 'C') {
+        resources.add({'x': x, 'y': y});
+      }
+    }
+  }
+  
+  return resources;
+}
+
+// Step 2B: Find all traps on the grid
+List<Map<String, int>> findTraps() {
+  List<Map<String, int>> traps = [];
+  
+  for (int y = 0; y < gridSize; y++) {
+    for (int x = 0; x < gridSize; x++) {
+      if (grid[y][x] == 'T') {
+        traps.add({'x': x, 'y': y});
+      }
+    }
+  }
+  
+  return traps;
+}
+
+// Step 3: Find the nearest resource or village
+Map<String, int>? findNearestResource(List<Map<String, int>> resources) {
+  Map<String, int>? closestResource;
+  int shortestDistance = double.infinity.toInt();
+  
+  // Add implementation later when I figure out which one to use.
+  return closestResource;
+}
+
+Map<String, dynamic> returnToVillage() {
+  // Move to the center of the grid where the village is located
+  return moveTo(gridSize ~/ 2, gridSize ~/ 2);
+}
+
+// Step 4: Move to the target position (resource or village)
+Map<String, dynamic> moveTo(int targetX, int targetY) {
+  // Use A* or BFS to find the shortest path to target
+  List<Map<String, int>> path = findPath(goblinPosition, {'x': targetX, 'y': targetY});
+  
+  if (path.isNotEmpty) {
+    // Move one step in the direction of the target
+    Map<String, int> nextStep = path[0];
+    return move(nextStep['x']!, nextStep['y']!);
+  }
+  
+  return returnGameState('stuck'); // If no valid path, consider it as being stuck
+}
+
+List<Map<String, int>> findPath(Map<String, int> start, Map<String, int> end) {
+  // Implement A* or BFS to find the shortest path from start to end
+  // Pathfinding will consider avoiding traps and rivers
+  
+  // Placeholder implementation
+  return [];
+}
+
   Map<String, dynamic> autoMove() {
     Map<String, dynamic> surroundings = {
       'left':
