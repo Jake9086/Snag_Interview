@@ -1,7 +1,6 @@
 // Copyright (C) 2024, Snag Delivery, Inc. All Rights Reserved
 // CONFIDENTIAL
 // Please do not distribute without prior authorization from Snag Delivery, Inc.
-import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'dart:math';

@@ -3,23 +3,17 @@
 // Please do not distribute without prior authorization from Snag Delivery, Inc.
 
 class GoblinController {
-  bool only1Tracker = true;
+  bool only1Tracker = true; // This is a dumb name, but this is so it identifies we are in the last steps to move on to the right function
   int inventory = 0;
   var target = <String, int>{}; // Target position (resource or village)
   List<Map<String, int>> resourceList = []; 
   String turn(
     Map<String, dynamic> currentCell, Map<String, dynamic> surroundings, Map<String,int> goblinPosition,  List<List<String>> grid) {
     resourceList = findResources(grid);
-    // Get the terrain of the current cell
-    String terrain = grid[goblinPosition['y']!][goblinPosition['x']!];
-
-    // Step 1: Check if we have a target resource or if we should be heading to the village
     if (target.isEmpty) {
       // If there's no target, find the nearest resource or decide to return to the village
       target = findNearestResource(goblinPosition,resourceList);
     }
-
-    // Step 2: Find the best direction to move towards the target (using pathfinding)
 
   List<Map<String, int>> path = findPath(goblinPosition, target);
    
@@ -52,7 +46,7 @@ class GoblinController {
     
     // If we have a path to follow, return the first step in the path
     if (path.isNotEmpty) {
-      Map<String, int> nextStep = path[0]; // The next step to take (first step after the current position)
+      Map<String, int> nextStep = path[0];
       
       // Return the direction based on the target's position relative to the goblin's current position
       if (nextStep['x']! < goblinPosition['x']!) return 'left';
@@ -60,8 +54,7 @@ class GoblinController {
       if (nextStep['y']! < goblinPosition['y']!) return 'up';
       if (nextStep['y']! > goblinPosition['y']!) return 'down';
     }
-    // Step 3: If there are no valid moves from the pathfinding, avoid traps or move randomly
-    // Check if there is a trap in the surrounding tiles
+    
     for (var direction in surroundings.values) {
       String surroundingTerrain = direction['terrain'];
     
@@ -76,6 +69,7 @@ class GoblinController {
         if (direction['y'] > currentCell['y']) return 'up';
       }
 
+      // fixed a weird bug where if goblin was perfectly between too it would just stand still this just forces it to move so we can calculate the one we need
       if(surroundingTerrain == 'G' ||surroundingTerrain == 'D' || surroundingTerrain =='C'){
         if(currentCell['x'] == false || currentCell['y'] == null){
             return 'right';
@@ -87,7 +81,7 @@ class GoblinController {
       }
     }
 
-    // If there are no traps, move randomly (or explore more)
+    // Just in case
     List<String> possibleDirections = ['left', 'right', 'up', 'down'];
     return possibleDirections[DateTime.now().millisecond % 4];  // Random direction for fallback
   }
@@ -95,9 +89,8 @@ class GoblinController {
   // Find the nearest resource (or village if no resources are available)
   Map<String, int> findNearestResource(Map<String, int> goblinPosition, List<Map<String, int>> resourceList) {
   Map<String, int> closestResource = {} ;
-  int shortestDistance = 9999999999;  // Start with a very large number for comparison
-  
-  // Loop through all the resources and find the closest one to the goblin position
+  int shortestDistance = 9999999999;  
+
   for (var resource in resourceList) {
     int distance = calculateDistance(goblinPosition, resource);
     
@@ -139,12 +132,11 @@ class GoblinController {
       goblinPosition['y'] = goblinPosition['y']! + (dy > 0 ? 1 : -1);
       dy -= (dy > 0 ? 1 : -1);
     }
-    path.add(Map.from(goblinPosition)); // Add the new position to the path
+    path.add(Map.from(goblinPosition));
   }
 
   return path;
 }
-
 
 int calculateDistance(Map<String, int> start, Map<String, int> end) {
   return (start['x']! - end['x']!).abs() + (start['y']! - end['y']!).abs();
