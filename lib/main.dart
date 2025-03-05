@@ -592,7 +592,7 @@ class GoblinChieftain {
   late int movesTaken;
   late String gameState;
   late int totalItemsCollected;
-  late GoblinController controller;
+  GoblinController controller;
 
   GoblinChieftain(this.controller,
       {this.gridSize = 13,
@@ -705,28 +705,6 @@ class GoblinChieftain {
         max((goblinPosition['x']! - x).abs(), (goblinPosition['y']! - y).abs());
     return distance <= 1;
   }
-
-Map<String, dynamic> moveValidator(int dx, int dy) {
-  int newX = goblinPosition['x']! + dx;
-  int newY = goblinPosition['y']! + dy;
- 
-  // Check if move is valid (not out of bounds and not a trap)
-  if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
-    String terrain = grid[newY][newX];
-   
-    // Avoid traps and impassable rivers
-    if (terrain != 'T' && (terrain != 'R' || grid[newY][newX] == 'B')) {
-      goblinPosition['x'] = newX;
-      goblinPosition['y'] = newY;
-     
-      // Collect resource if on a resource tile
-      collectResource();
-     
-      return returnGameState('ongoing');
-    }
-  }
-  return returnGameState('stuck'); // If move is invalid, consider it as stuck
-}
 
   Map<String, dynamic> autoMove() {
     Map<String, dynamic> surroundings = {
@@ -856,5 +834,4 @@ Map<String, dynamic> moveValidator(int dx, int dy) {
     }
     return tiles;
   }
-  
 }

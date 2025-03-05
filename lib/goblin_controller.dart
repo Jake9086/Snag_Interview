@@ -91,6 +91,12 @@ class GoblinController {
   Map<String, int> closestResource = {} ;
   int shortestDistance = 9999999999;  
 
+  if(resourceList.isEmpty){
+    target['x'] = 6;
+    target['y'] = 6;
+    return target;
+  }
+
   for (var resource in resourceList) {
     int distance = calculateDistance(goblinPosition, resource);
     
@@ -106,7 +112,7 @@ class GoblinController {
  List<Map<String, int>> findPath(Map<String, int> goblinPosition, Map<String, int> target) {
   List<Map<String, int>> path = [];
 
-  if (target.isEmpty) {
+  if (target.isEmpty && resourceList.isNotEmpty) {
     resourceList.removeWhere((position) =>
       position['x'] == target['x'] && position['y'] == target['y']);
      target = findNearestResource(goblinPosition,resourceList);
